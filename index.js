@@ -31,13 +31,13 @@ class App extends React.Component {
         const bal = reach.formatCurrency(balAtomic, 4);
         this.setState({acc, bal});
         if(await reach.canFundFromFaucet()){
-            this.setState({view: 'FundAccount'});
+            this.setState({view: 'FundAccount'}); 
         } else {
             this.setState({view: 'DeployerOrAttacher'});
         }
     }
-    async fundAccount(fundAmount) {
-        await reach.fundFromFaucet(this.state.acc, reach.parseCurrency(fundAmount));
+    async fundAccount(fundAmount) { 
+        await reach.fundFromFaucet(this.state.acc, reach.parseCurrency(fundAmount)); //https://bank.testnet.algorand.network/
         this.setState({view: 'DeployerOrAttacher'});
     }
     async skipFundAccount() {this.setState({view: 'DeployerOrAttacher'}); }
@@ -59,16 +59,16 @@ class Player extends React.Component {
         return hand;
     }
     async getGuess() {
-        const guess = await new Promise(resolveGuessP => {
-            this.setState({view: 'GetGuess', playable: true, resolveGuessP});
+        const guess = await new Promise(resolveGuessP => { 
+            this.setState({view: 'GetGuess', playable: true, resolveGuessP}); //playable buttons
         });
         this.setState({view: 'WaitingForResults', guess});
         return guess;
     }
     seeOutcome(i) { this.setState({view: 'Done', outcome: intToOutcome[i]});}
     timeoutNotice() {this.setState({view: 'Timeout'}); }
-    playHand(hand) { this.state.resolveHandP(hand); }
-    playGuess(guess) { this.state.resolveGuessP(guess); }
+    getHand(hand) { this.state.resolveHandP(hand); }
+    getGuess(guess) { this.state.resolveGuessP(guess); }
 }
 
 class Deployer extends Player {
@@ -78,7 +78,7 @@ class Deployer extends Player {
     }
     setWager(wager) {this.setState({view: 'Deploy', wager});}
     async deploy() {
-        const ctc = this.props.acc.contract(backend);
+        const ctc = this.props.acc.contract(backend); //const ctcP1 = accP1.contract(backend);
         this.setState({view: 'Deploying', ctc});
         this.wager = reach.parseCurrency(this.state.wager);
         this.deadline = {ETH: 10, ALGO: 5, CFX: 1000}[reach.connector];
