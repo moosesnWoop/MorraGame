@@ -66,7 +66,7 @@ class Player extends React.Component {
         return guess;
     }
     seeOutcome(i) { this.setState({view: 'Done', outcome: intToOutcome[i]});}
-    informTimeout() {this.setState({view: 'Timeout'}); }
+    timeoutNotice() {this.setState({view: 'Timeout'}); }
     playHand(hand) { this.state.resolveHandP(hand); }
     playGuess(guess) { this.state.resolveGuessP(guess); }
 }
@@ -81,8 +81,8 @@ class Deployer extends Player {
         const ctc = this.props.acc.contract(backend);
         this.setState({view: 'Deploying', ctc});
         this.wager = reach.parseCurrency(this.state.wager);
-        this.deadline = {ETH: 10, ALGO: 10, CFX: 1000}[reach.connector];
-        backend.Evens(ctc, this);
+        this.deadline = {ETH: 10, ALGO: 5, CFX: 1000}[reach.connector];
+        backend.Odds(ctc, this);
         const ctcInfoStr = JSON.stringify(await ctc.getInfo(), null, 2);
         this.setState({view: 'WaitingForAttacher', ctcInfoStr});
     }
