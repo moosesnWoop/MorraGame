@@ -8,7 +8,7 @@ exports.Wrapper = class extends React.Component {
     return (
       <div className="App">
         <header className="App-header" id="root">
-          <h1>Morra</h1>
+          <h1>Morra Blockchain Game</h1>
           {content}
         </header>
       </div>

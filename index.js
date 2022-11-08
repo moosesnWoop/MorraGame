@@ -13,6 +13,8 @@ import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 reach.setWalletFallback(reach.walletFallback({
   providerEnv: 'TestNet', MyAlgoConnect }));
 
+const outcome = ['P2_Wins', 'DRAW', 'P1_Wins']
+
 
 // declare constants
 const intToOutcome = ['Player 2 wins!', 'Draw!', 'Player One wins!'];
@@ -51,6 +53,7 @@ class Player extends React.Component {
     //these are the function definitions
     // these mirror the front end
     random() { return reach.hasRandom.random(); } //this is the ...stdlib.hasRandom in mjs
+
     async getHand() {
         const hand = await new Promise(resolveHandP => {
             this.setState({view: 'GetHand', playable: true, resolveHandP});
@@ -66,9 +69,11 @@ class Player extends React.Component {
         return guess;
     }
     seeOutcome(i) { this.setState({view: 'Done', outcome: intToOutcome[i]});}
+    getOutcome(i) { this.setState({view: 'Done', outcome: intToOutcome[i]});}
     timeoutNotice() {this.setState({view: 'Timeout'}); }
-    getHand(hand) { this.state.resolveHandP(hand); }
-    getGuess(guess) { this.state.resolveGuessP(guess); }
+    playHand(hand) { this.state.resolveHandP(hand); }
+    playGuess(guess) { this.state.resolveGuessP(guess); }
+    endGameNotice(i){this.setState({view: 'Done', outcome: intToOutcome[i]})}
 }
 
 class Deployer extends Player {
@@ -81,7 +86,7 @@ class Deployer extends Player {
         const ctc = this.props.acc.contract(backend); //const ctcP1 = accP1.contract(backend);
         this.setState({view: 'Deploying', ctc});
         this.wager = reach.parseCurrency(this.state.wager);
-        this.deadline = {ETH: 10, ALGO: 5, CFX: 1000}[reach.connector];
+        this.deadline = {ETH: 10, ALGO: 10, CFX: 1000}[reach.connector];
         backend.Odds(ctc, this);
         const ctcInfoStr = JSON.stringify(await ctc.getInfo(), null, 2);
         this.setState({view: 'WaitingForAttacher', ctcInfoStr});
@@ -99,7 +104,7 @@ class Attacher extends Player {
     attach(ctcInfoStr) {
         const ctc = this.props.acc.contract(backend, JSON.parse(ctcInfoStr));
         this.setState({view: 'Attaching'});
-        backend.Odds(ctc, this);
+        backend.Evens(ctc, this);
     }
     async acceptWager(wagerAtomic){
         const wager = reach.formatCurrency(wagerAtomic, 4);

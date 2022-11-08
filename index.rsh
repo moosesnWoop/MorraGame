@@ -94,7 +94,7 @@ export const main = Reach.App(() => {
     playerTwo.only(()=>{
         interact.acceptWager(wager);
     });
-    playerTwo.pay(wager)
+    playerTwo.publish().pay(wager)
              .timeout(relativeTime(deadline), () => closeTo(playerOne, timeoutNotice));
              
  // now we have both players wager - game is ready to start below:  
